@@ -27,11 +27,22 @@ public class GlobalExceptionHandler {
     @ExceptionHandler(EmailAlreadyExistsException.class)
     public ResponseEntity<Map<String,String>> emailAlreadyExistsException(EmailAlreadyExistsException ex){
 
-
+        log.warn("Email already exists");
         Map<String,String> errors= new HashMap<>();
         errors.put("Message", "Email already exists with this mail id");
 
         return ResponseEntity.badRequest().body(errors);
+    }
+
+    @ExceptionHandler(PatientNotFoundException.class)
+    public  ResponseEntity<Map<String,String>> patientNotFoundException(PatientNotFoundException ex){
+
+        log.warn("Patient does not exist with given id");
+        Map<String,String> errors = new HashMap<>();
+        errors.put("Message", "Patient not found for given id");
+
+        return  ResponseEntity.badRequest().body(errors);
+
     }
 
 
