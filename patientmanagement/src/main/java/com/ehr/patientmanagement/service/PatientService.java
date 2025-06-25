@@ -5,6 +5,7 @@ import com.ehr.patientmanagement.dto.PatientResponseDTO;
 import com.ehr.patientmanagement.entity.Patient;
 import com.ehr.patientmanagement.exception.EmailAlreadyExistsException;
 import com.ehr.patientmanagement.exception.PatientNotFoundException;
+import com.ehr.patientmanagement.grpc.BillingGrpcClient;
 import com.ehr.patientmanagement.mapper.PatientMapper;
 import com.ehr.patientmanagement.repository.PatientRepository;
 import org.springframework.stereotype.Service;
@@ -18,9 +19,11 @@ public class PatientService {
 
 
     private PatientRepository patientRepository;
+    private BillingGrpcClient billingGrpcClient;
 
-    public PatientService(PatientRepository patientRepository) {
+    public PatientService(PatientRepository patientRepository, BillingGrpcClient billingGrpcClient) {
         this.patientRepository = patientRepository;
+        this.billingGrpcClient=billingGrpcClient;
     }
 
     public List<PatientResponseDTO> getPatients(){
@@ -40,6 +43,8 @@ public class PatientService {
              newPatient.setId(UUID.randomUUID().toString());
 
               newPatient =  patientRepository.save(newPatient);
+
+              billingGrpcClient.createBillingAccount(newPatient.getId(), newPatient.getName(), newPatient.getEmail());
 
         return  PatientMapper.toDTO(newPatient);
     }
