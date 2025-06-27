@@ -1,0 +1,15 @@
+
+
+  server:
+    port:4004
+
+  spring:
+    cloud:
+      gateway:
+        routes:
+          -id: patient-service-route
+          uri: http://localhost:4000
+          predicates:
+            - path=/api/patients/**
+          filters:
+            - strip-prefix=1
